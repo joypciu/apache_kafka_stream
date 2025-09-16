@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+.envrc
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# VS Code
+.vscode/
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# Data files
+*.jsonl
+cold_store/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# ClickHouse
+clickhouse_data/
+
+# Misc
+*.bak
+*.swp
+*.tmp
+
+# Ignore architecture and docs only if generated
+!architecture.txt
+!guide.md
+!README.md
+
+#ignore api keys and secrets
+cricketdata.org api key
+cricketdata.org api key.txt

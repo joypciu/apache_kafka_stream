@@ -1,0 +1,27 @@
+
+
+[Football APIs / Betting APIs / Websocket feeds]
+               │
+      (producers / scrapers)
+  producer_testapi.py (Scorebat)  <--- periodically polls football API 1
+  producer_footballapi2.py (TheSportsDB) ---> polls football API 2
+               │
+               ▼
+         API JSONL files
+   ┌───────────────┬───────────────┐
+   │ api_test.jsonl│ api2.jsonl    │
+   └───────────────┴───────────────┘
+               │
+               ▼
+   enrichment_watchdog.py
+   - monitors all API JSONL files
+   - merges and enriches by player/team unique id
+   - outputs cumulative enriched data -> enriched.jsonl
+               │
+               ▼
+        Downstream sinks
+  - sink_writer.py consumes enriched.jsonl -> ClickHouse (hot)
+  - sink_writer.py writes daily partitioned JSON files -> cold storage (local/MinIO)
+               │
+               ▼
+   Dashboards / APIs / ML Models / BI tools
