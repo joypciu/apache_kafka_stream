@@ -18,14 +18,14 @@ history_loader.py (one-off) ---> loads past matches
  └─────────┴───────────────┴──────────────┘
          │
          ▼
-   Apache Flink Job(s)
-- consume cr_live + cr_history
-- enrich, aggregate, join
-- output enriched events -> cr_enriched
+   Enrichment Watchdog (enrichment_watchdog.py)
+   - Monitors API JSONL files (e.g., api_test.jsonl, api2.jsonl)
+   - Merges and enriches data for players/teams by unique ID
+   - Writes cumulative enriched data to enriched.jsonl
          │
          ▼
    Downstream sinks
-sink_writer.py consumes cr_enriched -> ClickHouse (hot)
+sink_writer.py consumes from enriched.jsonl -> ClickHouse (hot)
 sink_writer.py writes daily JSON files -> cold storage
          │
          ▼
@@ -52,7 +52,7 @@ Dashboards / APIs / ML Models / BI tools
 - Writes cumulative output to `enriched.jsonl`
 
 ### 4. `sink_writer.py` (optional)
-- Can be adapted to consume from `enriched.jsonl` or Kafka topic
+- Consumes from `enriched.jsonl` for enriched data
 - Writes data to ClickHouse database
 - Stores daily partitioned JSON files in `cold_store/`
 
@@ -70,7 +70,7 @@ Dashboards / APIs / ML Models / BI tools
    - Run `history_loader.py` to load historical data (optional).
 
 4. **Run Enrichment Job**
-   - Start `enrichment_job.py` to process and enrich events.
+   - Start `enrichment_watchdog.py` to monitor and enrich data from API files.
 
 5. **Run Sink Writer**
    - Start `sink_writer.py` to store enriched data in ClickHouse and cold storage.
